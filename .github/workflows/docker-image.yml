@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "dev", "stage", "master" ]
+
+jobs:
+  build-dev:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/dev' && github.event_name == 'push' }}
+    environment: dev
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name-dev:$(date +%s)
+  build-stage:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/stage' && github.event_name == 'push' }}
+    environment: stage
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name-stage:$(date +%s)
+  build-master:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name-master:$(date +%s)
